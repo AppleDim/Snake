@@ -10,7 +10,7 @@ To restart the game, run SnakeGame.main() again.
 
  Some required features or issued to be solved:
  1) Entire body of the snake should be painted correctly (rectangle parts must be replaced with painted ones).
- 2) The should be timer, which shows how much time elapsed from the start.
+ 2) There should be timer, which shows how much time elapsed from the start.
  3) This timer should be shown in the GameOver panel, as well as it must be written in the Score.txt file.
  4) There should be buttons, first of which should restart the game and second one should close the GameOver panel.
  5) There should be some barriers that snake can overcome in order to make game a little more entertaining.
