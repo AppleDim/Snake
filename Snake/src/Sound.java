@@ -11,7 +11,7 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class Sound implements AutoCloseable {
-    private boolean released= false;
+    private boolean released = false;
     private AudioInputStream stream = null;
     private Clip clip = null;
     private FloatControl volumeControl = null;
@@ -60,7 +60,6 @@ public class Sound implements AutoCloseable {
         play(true);
     }
 
-    // Останавливает воспроизведение
     public void stop() {
         if (playing) {
             clip.stop();
@@ -98,7 +97,6 @@ public class Sound implements AutoCloseable {
         }
     }
 
-    // Статический метод, для удобства
     public static Sound playSound(String path) {
         File f = new File(path);
         Sound snd = new Sound(f);
