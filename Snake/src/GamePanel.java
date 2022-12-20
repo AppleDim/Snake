@@ -3,19 +3,9 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.JPanel;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collections;
 import java.util.Random;
 
 
@@ -25,12 +15,10 @@ public class GamePanel extends JPanel implements ActionListener {
     static final int SCREEN_HEIGHT = 900;
     static final int UNIT_SIZE = 30;
     static final int GAME_UNITS = (SCREEN_WIDTH * SCREEN_HEIGHT) / UNIT_SIZE;
-    static final String outputFile = "GameFiles\\Score.txt";
     static int DELAY = 100;
     static String dateTime;
     static int score;
-    static StringBuilder sb;
-    static List<Integer> scoreList;
+
     final int[] x = new int[GAME_UNITS];
     final int[] y = new int[GAME_UNITS];
     int bodyParts = 6;
@@ -180,6 +168,42 @@ public class GamePanel extends JPanel implements ActionListener {
         }
     }
 
+/*    public void headDirectCalculate() {
+        List<Character> directionList = new ArrayList<>(bodyParts);
+        switch (direction) {
+            case 'U' -> {
+                directionList.add(0, 'U');
+            }
+            case 'D' -> {
+                directionList.add(0, 'D');
+            }
+            case 'L' -> {
+                directionList.add(0, 'L');
+            }
+            case 'R' -> {
+                directionList.add(0, 'R');
+            }
+        }
+        System.out.println(directionList);
+        for (int i = 1; i < bodyParts; i++) {
+            if (directionList.get(i - 1) == 'U') {
+                directionList.set(i, 'U');
+            }
+            if (directionList.get(i - 1) == 'R') {
+                directionList.set(i, 'R');
+            }
+            if (directionList.get(i - 1) == 'D') {
+                directionList.set(i, 'D');
+            }
+            if (directionList.get(i - 1) == 'L') {
+                directionList.set(i, 'L');
+            }
+        }
+        System.out.println(directionList);
+    }
+
+ */
+
     public void checkFruit() {
         if ((x[0] == fruitX) && (y[0] == fruitY)) {
             bodyParts++;
@@ -231,18 +255,10 @@ public class GamePanel extends JPanel implements ActionListener {
             dateTime = LocalDateTime.now()
                     .format(DateTimeFormatter.ofPattern("dd LLLL yyyy HH:mm:ss"));
             score = fruitsEaten;
-            writeToFileStatistics();
+            Database.connectToDatabase();
         }
     }
 
-    public void writeToFileStatistics() {
-        try {
-            String text = dateTime + ": " + score + "\n";
-            Files.write(Paths.get(outputFile), text.getBytes(), StandardOpenOption.APPEND);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void gameOver(Graphics g) {
         //Score
@@ -252,8 +268,8 @@ public class GamePanel extends JPanel implements ActionListener {
         g.drawString("Score: " + fruitsEaten,
                 (SCREEN_WIDTH - metrics1.stringWidth("Score: " + fruitsEaten)) / 2,
                 SCREEN_HEIGHT / 4);
-        g.drawString("HighScore: " + calculateHighScore(),
-                (SCREEN_WIDTH - metrics1.stringWidth("HighScore: " + calculateHighScore())) / 2,
+        g.drawString("HighScore: " + Database.calculateHighScore(),
+                (SCREEN_WIDTH - metrics1.stringWidth("HighScore: " + Database.calculateHighScore())) / 2,
                 SCREEN_HEIGHT / 3);
         //Game OVER text
         g.setColor(Color.RED);
@@ -270,28 +286,11 @@ public class GamePanel extends JPanel implements ActionListener {
         }
     }
 
-    public static int calculateHighScore() {
-        sb = new StringBuilder();
-        scoreList = new ArrayList<>();
-        try (BufferedReader fileReader = new BufferedReader(new FileReader("GameFiles\\Score.txt"))) {
-            while (fileReader.ready()) {
-                sb.append(fileReader.readLine()).append("\n");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String[] lines = sb.toString().split("\n");
-        for (String line : lines) {
-            scoreList.add(Integer.parseInt(line.substring(line.lastIndexOf(":") + 2)));
-        }
-        Collections.sort(scoreList);
-        return scoreList.get(scoreList.size() - 1);
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if (running) {
             move();
+            //     headDirectCalculate();
             checkFruit();
             checkCollisions();
             checkRunning();
