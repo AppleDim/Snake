@@ -8,9 +8,7 @@ import java.time.format.DateTimeFormatter;
 
 import java.util.Random;
 
-
 public class GamePanel extends JPanel implements ActionListener {
-
     static final int SCREEN_WIDTH = 900;
     static final int SCREEN_HEIGHT = 900;
     static final int UNIT_SIZE = 30;
@@ -18,7 +16,6 @@ public class GamePanel extends JPanel implements ActionListener {
     static int DELAY = 100;
     static String dateTime;
     static int score;
-
     final int[] x = new int[GAME_UNITS];
     final int[] y = new int[GAME_UNITS];
     int bodyParts = 6;
@@ -49,7 +46,6 @@ public class GamePanel extends JPanel implements ActionListener {
         running = true;
         timer = new Timer(DELAY, this);
         timer.start();
-
     }
 
 
@@ -65,6 +61,7 @@ public class GamePanel extends JPanel implements ActionListener {
                 g.drawLine(0, i * UNIT_SIZE, SCREEN_WIDTH, i * UNIT_SIZE);
                 g.setColor(new Color(0, 0, 0));
             }
+
             int imageIcons = fruitsEaten % 8;
             switch (imageIcons) {
                 case 0 ->
@@ -160,6 +157,7 @@ public class GamePanel extends JPanel implements ActionListener {
             x[i] = x[i - 1];
             y[i] = y[i - 1];
         }
+
         switch (direction) {
             case 'U' -> y[0] = y[0] - UNIT_SIZE;
             case 'D' -> y[0] = y[0] + UNIT_SIZE;
@@ -216,6 +214,7 @@ public class GamePanel extends JPanel implements ActionListener {
                 case 3 -> Sound.playSound("GameFiles\\eat4.wav");
             }
             newFruit();
+
             if (timer.getDelay() > 50) {
                 timer.setDelay(DELAY - fruitsEaten * 2);
             }
@@ -255,29 +254,31 @@ public class GamePanel extends JPanel implements ActionListener {
             dateTime = LocalDateTime.now()
                     .format(DateTimeFormatter.ofPattern("dd LLLL yyyy HH:mm:ss"));
             score = fruitsEaten;
+
             Database.connectToDatabase();
         }
     }
 
 
     public void gameOver(Graphics g) {
-        //Score
         g.setColor(Color.RED);
         g.setFont(new Font("Times New Roman", Font.BOLD, 40));
         FontMetrics metrics1 = getFontMetrics(g.getFont());
         g.drawString("Score: " + fruitsEaten,
                 (SCREEN_WIDTH - metrics1.stringWidth("Score: " + fruitsEaten)) / 2,
                 SCREEN_HEIGHT / 4);
+
         g.drawString("HighScore: " + Database.calculateHighScore(),
                 (SCREEN_WIDTH - metrics1.stringWidth("HighScore: " + Database.calculateHighScore())) / 2,
                 SCREEN_HEIGHT / 3);
-        //Game OVER text
+
         g.setColor(Color.RED);
         g.setFont(new Font("Times New Roman", Font.BOLD, 125));
         FontMetrics metrics2 = getFontMetrics(g.getFont());
         g.drawString("Game Over",
                 (SCREEN_WIDTH - metrics2.stringWidth("Game Over")) / 2,
                 SCREEN_HEIGHT / 2 + 100);
+
         int deathSound = (int) (Math.random() * 3);
         switch (deathSound) {
             case 0 -> Sound.playSound("GameFiles\\death1.wav");
